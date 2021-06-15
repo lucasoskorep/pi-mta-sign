@@ -4,7 +4,7 @@ import json
 
 from google.transit import gtfs_realtime_pb2
 from protobuf_to_dict import protobuf_to_dict
-from route import get_route_from_dict
+from .route import get_route_from_dict
 from time import time
 
 
@@ -24,7 +24,6 @@ class MTA(object):
         with open(endpoints_file, "r") as f:
             self.endpoints = json.load(f)
         self.set_valid_endpoints()
-        # TODO: filter out anything from a train line we are not searching for
 
     def set_valid_endpoints(self):
         self.valid_endpoints = {}

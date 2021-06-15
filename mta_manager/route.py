@@ -1,4 +1,4 @@
-from stop import get_stop_from_dict
+from .stop import get_stop_from_dict
 
 
 def get_route_from_dict(obj):
