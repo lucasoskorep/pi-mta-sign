@@ -10,7 +10,7 @@ from time import time
 
 class MTA(object):
     def __init__(self, api_key: str, train_lines, station_ids, timing_callbacks=None, alert_callbacks=None,
-                 endpoints_file="./endpoints.json", callback_frequency=5, max_arrival_time=30):
+                 endpoints_file="./endpoints.json", callback_frequency=10, max_arrival_time=30):
         self.header = {
             "x-api-key": api_key
         }

@@ -24,6 +24,9 @@ def get_mta_data():
         subway_data
     )
 
+@app.route("/stops", methods=["GET"])
+def get_routes():
+    return jsonify()
 
 if __name__ == "__main__":
     api_key = os.getenv('MTA_API_KEY', '')
@@ -62,7 +65,7 @@ if __name__ == "__main__":
     for t in threads:
         t.start()
 
-    app.run("0.0.0.0", port=5000)
+    app.run("0.0.0.0", port=5000, debug=True)
     # Wait for all threads to complete
     for t in threads:
         t.join()
