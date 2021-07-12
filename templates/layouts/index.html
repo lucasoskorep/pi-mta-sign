@@ -1,44 +1,162 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/style.css">
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <script src="/static/js/DataRequests.js"></script>
-    <meta charset="UTF-8">
-    <title>SUBWAY DISPLAY!</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.0.2/dist/css/bootstrap-dark.min.css" rel="stylesheet">
+
+    <title>Hello, world!</title>
 </head>
-
-<body>
-<div id="main_div">
-    <div id="header_div">
-        <span>PI MTA TRACKER</span>
+<body class="dark">
+<nav class="navbar navbar-dark bg-dark py-2">
+    <div class="container-fluid">
+        <a class="site-title navbar-brand" href="#">
+            <h1 class="display-1">
+                <img src="/static/images/RPI-LOGO.png" alt="" width="43" height="50"
+                     class="d-inline-block align-baseline">
+                Pi MTA Display!
+            </h1>
+        </a>
     </div>
-    <div class="station_div">
-        <div class="station_header">
-            <span>Times Square Station</span>
+</nav>
+<div>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1 station-name">Navbar</span>
         </div>
-        <div class="direction_div">
-            <div class="direction_header"> North</div>
-            <div>Train 1 Info</div>
-            <div>Train 2 Info</div>
-            <div>Train 3 Info</div>
-        </div>
-        <div class="direction_div">
-            <div class="direction_header"> South</div>
-            <div>Train 1 Info</div>
-            <div>Train 2 Info</div>
-            <div>Train 3 Info</div>
+    </nav>
+    <div class="container-fluid content-row g-0">
+        <div class="row h-50 g-0">
+            <div class="col-sm-6 ">
+                <div class="card">
+                    <div class="card-header">
+                        <h1 class="display-4">
+                            North
+                        </h1>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item station-info">
+
+                            <img src="/static/images/lines/1.svg" alt="" width="60" height="60"
+                                 class="align-middle">
+                            <h1 class="display-4 align-middle">
+                                1, 4, and 5 minutes
+                            </h1>
+                        </li>
+                        <li class="list-group-item station-info">
+                            <h1 class="display-4">1, 4, and 5 minutes</h1>
+                        </li>
+                        <li class="list-group-item station-info">
+                            <h1 class="display-4">1 and 5 minutes</h1>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-6 ">
+                <div class="card">
+                    <div class="card-header">
+                        <h1 class="display-4">
+                            South
+                        </h1>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item station-info">
+
+                            <img src="/static/images/lines/1.svg" alt="" width="60" height="60"
+                                 class="align-middle">
+                            <h1 class="display-4 align-middle">
+                                Pi MTA Display!
+                            </h1>
+                        </li>
+                        <li class="list-group-item station-info">
+                            <img src="/static/images/lines/2.svg" alt="" width="60" height="60"
+                                 class="align-middle">
+                            <h1 class="display-4">A second item</h1>
+                        </li>
+                        <li class="list-group-item station-info">
+                            <img src="/static/images/lines/3.svg" alt="" width="60" height="60"
+                                 class="align-middle">
+                            <h1 class="display-4">A third item </h1>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
-
-
-    <button id="test_button">Test Button</button>
-    <span id="result"></span>
 </div>
+<div>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1 station-name">Marble Hill-225 St</span>
+        </div>
+    </nav>
+    <div class="container-fluid content-row g-0">
+        <div class="row h-50 g-0">
+            <div class="col-sm-6 ">
+                <div class="card">
+                    <div class="card-header">
+                        <h1 class="display-4">
+                            North
+                        </h1>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item station-info">
 
-<footer>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</footer>
+                            <img src="/static/images/lines/A.svg" alt="" width="60" height="60"
+                                 class="align-middle">
+                            <h1 class="display-4 align-middle">
+                                Pi MTA Display!
+                            </h1>
+                        </li>
+                        <li class="list-group-item station-info">
+                            <img src="/static/images/lines/C.svg" alt="" width="60" height="60"
+                                 class="align-middle">
+                            <h1 class="display-4">A second item</h1>
+                        </li>
+                        <li class="list-group-item station-info">
+                            <img src="/static/images/lines/E.svg" alt="" width="60" height="60"
+                                 class="align-middle">
+                            <h1 class="display-4">A third item </h1>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-6 ">
+                <div class="card">
+                    <div class="card-header">
+                        <h1 class="display-4">
+                            South
+                        </h1>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item station-info">
+
+                            <img src="/static/images/lines/1.svg" alt="" width="60" height="60"
+                                 class="align-middle">
+                            <h1 class="display-4 align-middle">
+                                Pi MTA Display!
+                            </h1>
+                        </li>
+                        <li class="list-group-item station-info">
+                            <h1 class="display-4">A second item</h1>
+                        </li>
+                        <li class="list-group-item station-info">
+                            <h1 class="display-4">A third item </h1>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
 </body>
 </html>

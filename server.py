@@ -39,10 +39,8 @@ if __name__ == "__main__":
 
     async def mta_callback(routes):
         global subway_data
-        print("We are inside of the call back now")
-        print(len(routes))
+        # TODO: Do away with this and throw it into websockets
         subway_data = mtaController.convert_routes_to_station_first(routes)
-        pprint(subway_data)
 
 
     class threadWrapper(threading.Thread):

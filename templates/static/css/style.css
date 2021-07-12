@@ -1,80 +1,38 @@
-
-#main_div {
-    margin: 10px;
-    width: 90%;
-    position: absolute;
-    left: 50%;
-    margin-left: -45%;
-    min-width: 500px;
-    background-color: blueviolet;
-    padding: 10px;
+.site-title {
+    font-size: 4rem;
 }
 
-#test_span {
-    background-color: blue;
+.card-header {
+    font-size: 3rem !important;
 }
 
-#header_div {
-    height: 75px;
-    margin: 10px;
-    padding: 10px;
-    display: flex;
-    background-color: coral;
+.station-name {
+    font-size: 3.5rem !important;
 }
 
-.station_div {
-    display: block;
-    overflow: auto;
-    margin: 10px;
-    padding: 10px;
-
-    background-color: lime;
+.station-info {
+    font-size: 2.5rem !important;
 }
 
-.station_header {
-    height: 75px;
-    padding: 10px;
-
-    border-radius: 25px 25px 1px 1px;
-    display: flex;
-    background-color: cornflowerblue;
+.station-info h1 {
+  float: right;
 }
 
-.direction_div {
-    height: 50%;
-    width: 50%;
-    float: left;
-    border-radius: 1px 1px 25px 25px;
-    background-color: aquamarine;
 
-}
+@media screen and (max-width: 1000px) {
+    .site-title {
+        font-size: 2rem !important;
+    }
 
-.direction_div div {
-    padding: 10px;
-    /*margin: 10px;*/
-    border-radius: 1px;
-    background-color: chocolate;
-}
+    .card-header {
+        font-size: 1.5rem !important;
+    }
 
-/*.direction_div div:first-child{*/
-/*    border-radius: 25px 25px 1px 1px;*/
-/*}*/
+    .station-name {
+        font-size: 1.75rem !important;
+    }
 
-.direction_div div:last-child {
-    border-radius: 1px 1px 25px 25px;
-}
-
-.direction_header {
-    background-color: bisque !important;
-    /*border-radius: 1px;*/
-}
-
-/*div {*/
-/*    border-radius: 25px;*/
-/*}*/
-
-span {
-    display: inline-flex;
-    vertical-align: middle;
-    align-items: center;
+    .station-info {
+        font-size: 1.25rem !important;
+    }
 }
