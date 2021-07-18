@@ -18,6 +18,11 @@
   float: right;
 }
 
+.dropdown-menu {
+    max-height: 280px;
+    overflow-y: auto;
+}
+
 
 @media screen and (max-width: 1000px) {
     .site-title {
