@@ -4,10 +4,20 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <script src="/static/js/DataRequests.js"></script>
     <link rel="stylesheet" href="/static/css/style.css">
     <!-- Bootstrap CSS -->
+    <script src="https://cdn.socket.io/3.1.3/socket.io.min.js"
+            integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh"
+            crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.0.2/dist/css/bootstrap-dark.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous"></script>
+    <script src="/static/js/DataRequests.js"></script>
 
     <title>Hello, world!</title>
 </head>
@@ -23,18 +33,18 @@
         </a>
     </div>
 </nav>
-<div>
+<div id="station_1">
     <nav class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
-            <span class="navbar-brand mb-0 h1 station-name">Navbar</span>
+            <span class="navbar-brand mb-0 h1 station-name">{{station_1}}</span>
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2"
                         data-bs-toggle="dropdown" aria-expanded="false">
-                    Dropdown button
+                    Select a Station
                 </button>
                 <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
                     {% for item in station_names %}
-                    <li><a class="dropdown-item" href="/get_stop_id/{{ item }}">{{ item }}</a></li>
+                    <li><a class="dropdown-item" onclick="javascript:setStation(this)">{{ item }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
@@ -51,18 +61,25 @@
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item station-info">
-
-                            <img src="/static/images/lines/1.svg" alt="" width="60" height="60"
+                            <img src="/static/images/lines/A.svg" alt="" width="60" height="60"
                                  class="align-middle">
                             <h1 class="display-4 align-middle">
-                                1, 4, and 5 minutes
+                                Pi MTA Display!
                             </h1>
                         </li>
                         <li class="list-group-item station-info">
-                            <h1 class="display-4">1, 4, and 5 minutes</h1>
+                            <img src="/static/images/lines/C.svg" alt="" width="60" height="60"
+                                 class="align-middle">
+                            <h1 class="display-4">
+                                Pi MTA Display!
+                            </h1>
                         </li>
                         <li class="list-group-item station-info">
-                            <h1 class="display-4">1 and 5 minutes</h1>
+                            <img src="/static/images/lines/E.svg" alt="" width="60" height="60"
+                                 class="align-middle">
+                            <h1 class="display-4">
+                                Pi MTA Display!
+                            </h1>
                         </li>
                     </ul>
                 </div>
@@ -76,22 +93,25 @@
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item station-info">
-
-                            <img src="/static/images/lines/1.svg" alt="" width="60" height="60"
+                            <img src="/static/images/lines/A.svg" alt="" width="60" height="60"
                                  class="align-middle">
                             <h1 class="display-4 align-middle">
                                 Pi MTA Display!
                             </h1>
                         </li>
                         <li class="list-group-item station-info">
-                            <img src="/static/images/lines/2.svg" alt="" width="60" height="60"
+                            <img src="/static/images/lines/C.svg" alt="" width="60" height="60"
                                  class="align-middle">
-                            <h1 class="display-4">A second item</h1>
+                            <h1 class="display-4">
+                                Pi MTA Display!
+                            </h1>
                         </li>
                         <li class="list-group-item station-info">
-                            <img src="/static/images/lines/3.svg" alt="" width="60" height="60"
+                            <img src="/static/images/lines/E.svg" alt="" width="60" height="60"
                                  class="align-middle">
-                            <h1 class="display-4">A third item </h1>
+                            <h1 class="display-4">
+                                Pi MTA Display!
+                            </h1>
                         </li>
                     </ul>
                 </div>
@@ -99,10 +119,21 @@
         </div>
     </div>
 </div>
-<div>
+<div id="station_2">
     <nav class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
-            <span class="navbar-brand mb-0 h1 station-name">Marble Hill-225 St</span>
+            <span class="navbar-brand mb-0 h1 station-name">{{station_2}}</span>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton3"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    Select a Station
+                </button>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton3">
+                    {% for item in station_names %}
+                    <li><a class="dropdown-item" onclick="javascript:setStation(this)">{{ item }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </nav>
     <div class="container-fluid content-row g-0">
@@ -116,7 +147,6 @@
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item station-info">
-
                             <img src="/static/images/lines/A.svg" alt="" width="60" height="60"
                                  class="align-middle">
                             <h1 class="display-4 align-middle">
@@ -126,12 +156,16 @@
                         <li class="list-group-item station-info">
                             <img src="/static/images/lines/C.svg" alt="" width="60" height="60"
                                  class="align-middle">
-                            <h1 class="display-4">A second item</h1>
+                            <h1 class="display-4">
+                                Pi MTA Display!
+                            </h1>
                         </li>
                         <li class="list-group-item station-info">
                             <img src="/static/images/lines/E.svg" alt="" width="60" height="60"
                                  class="align-middle">
-                            <h1 class="display-4">A third item </h1>
+                            <h1 class="display-4">
+                                Pi MTA Display!
+                            </h1>
                         </li>
                     </ul>
                 </div>
@@ -145,18 +179,25 @@
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item station-info">
-
-                            <img src="/static/images/lines/1.svg" alt="" width="60" height="60"
+                            <img src="/static/images/lines/A.svg" alt="" width="60" height="60"
                                  class="align-middle">
                             <h1 class="display-4 align-middle">
                                 Pi MTA Display!
                             </h1>
                         </li>
                         <li class="list-group-item station-info">
-                            <h1 class="display-4">A second item</h1>
+                            <img src="/static/images/lines/C.svg" alt="" width="60" height="60"
+                                 class="align-middle">
+                            <h1 class="display-4">
+                                Pi MTA Display!
+                            </h1>
                         </li>
                         <li class="list-group-item station-info">
-                            <h1 class="display-4">A third item </h1>
+                            <img src="/static/images/lines/E.svg" alt="" width="60" height="60"
+                                 class="align-middle">
+                            <h1 class="display-4">
+                                Pi MTA Display!
+                            </h1>
                         </li>
                     </ul>
                 </div>
@@ -166,8 +207,6 @@
 </div>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
+
 </body>
 </html>
