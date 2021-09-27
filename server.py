@@ -1,7 +1,7 @@
 import os
 import threading
 
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, abort
 from mta_manager import MTA
 from pprint import pprint
 import pandas as pd
@@ -12,7 +12,6 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = "SuperSecretDontEvenTryToGuessMeGGEZNoRe"
-app.debug = True
 app._static_folder = os.path.abspath("templates/static/")
 
 stops = pd.read_csv("stops.txt")
@@ -48,12 +47,12 @@ def link_to_station(data):
 @app.route("/mta_data", methods=["POST"])
 def get_mta_data():
     station = request.json["station"]
-    print(jsonify(
-        subway_data[station]
-    ))
-    return jsonify(
-        subway_data[station]
-    )
+    if station in subway_data:
+        return jsonify(
+            subway_data[station]
+        )
+    else:
+        abort(404)
 
 
 @app.route("/stops", methods=["GET"])
@@ -73,6 +72,7 @@ def get_stop_id():
 
 if __name__ == "__main__":
     api_key = os.getenv('MTA_API_KEY', '')
+
     mtaController = MTA(
         api_key,
         ["A", "C", "E", "1", "2", "3"],
@@ -83,6 +83,7 @@ if __name__ == "__main__":
     async def mta_callback(routes):
         global subway_data
         subway_data = link_to_station(mtaController.convert_routes_to_station_first(routes))
+        app.logger.info(f"Updated Subway Data - {subway_data}")
 
 
     class threadWrapper(threading.Thread):
@@ -105,7 +106,9 @@ if __name__ == "__main__":
     for t in threads:
         t.start()
 
-    app.run(host="localhost", debug=True, port=5000)
+    debug = os.getenv("DEBUG", 'False').lower() in ('true', '1', 't')
+
+    app.run(host="localhost", debug= debug,  port=5000)
     # Wait for all threads to complete
     for t in threads:
         t.join()
