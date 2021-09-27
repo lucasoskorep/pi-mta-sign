@@ -105,7 +105,7 @@ if __name__ == "__main__":
     for t in threads:
         t.start()
 
-    app.run(host="localhost", debug=True, port=5000)
+    app.run(host="localhost", debug=False, port=5000)
     # Wait for all threads to complete
     for t in threads:
         t.join()
