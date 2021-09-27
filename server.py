@@ -46,6 +46,7 @@ def link_to_station(data):
 
 @app.route("/mta_data", methods=["POST"])
 def get_mta_data():
+    global subway_data
     station = request.json["station"]
     if station in subway_data:
         return jsonify(
