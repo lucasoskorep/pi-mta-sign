@@ -35,7 +35,6 @@ class MTA(object):
 
     def start_updates(self):
         print("starting updates")
-        raise Exception("Testing failure case")
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(self._get_updates())
