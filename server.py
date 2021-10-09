@@ -110,7 +110,8 @@ if __name__ == "__main__":
 
     debug = os.getenv("DEBUG", 'False').lower() in ('true', '1', 't')
 
-    app.run(host="localhost", debug=debug, port=5000)
+    app.run(host="localhost", debug= False,  port=5000)
+
     # Wait for all threads to complete
     for t in threads:
         t.join()
