@@ -99,7 +99,7 @@ if __name__ == "__main__":
             try:
                 mtaController.start_updates()
             except Exception as e:
-                logging.info(f"Exception found in update function - {e}")s
+                logging.info(f"Exception found in update function - {e}")
 
 
     threadLock = threading.Lock()
