@@ -1,9 +1,9 @@
+import logging
 import os
 import threading
 
 from flask import Flask, jsonify, render_template, request, abort
 from mta_manager import MTA
-from pprint import pprint
 import pandas as pd
 
 from dotenv import load_dotenv
@@ -63,11 +63,8 @@ def get_routes():
 
 @app.route("/get_stop_id", methods=["POST"])
 def get_stop_id():
-    print(request.json)
     stop_name = request.json["stop_name"]
-    print(stop_name)
     rows = stops.loc[stops["stop_name"] == stop_name]
-    print(rows)
     return jsonify({"station_changed": True})
 
 
@@ -98,7 +95,11 @@ if __name__ == "__main__":
 
     def start_mta():
         mtaController.add_callback(mta_callback)
-        mtaController.start_updates()
+        while True:
+            try:
+                mtaController.start_updates()
+            except Exception as e:
+                logging.info(f"Exception found in update function - {e}")s
 
 
     threadLock = threading.Lock()
@@ -109,7 +110,7 @@ if __name__ == "__main__":
 
     debug = os.getenv("DEBUG", 'False').lower() in ('true', '1', 't')
 
-    app.run(host="localhost", debug= debug,  port=5000)
+    app.run(host="localhost", debug=debug, port=5000)
     # Wait for all threads to complete
     for t in threads:
         t.join()
