@@ -17,9 +17,9 @@
             src="https://code.jquery.com/jquery-3.6.0.min.js"
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
             crossorigin="anonymous"></script>
-    <script src="/static/js/DataRequests.js"></script>
+    <script src="/static/js/MtaData.js"></script>
 
-    <title>Hello, world!</title>
+    <title>Pi MTA Display!</title>
 </head>
 <body class="dark">
 <nav class="navbar navbar-dark bg-dark py-2">
@@ -31,6 +31,9 @@
                 Pi MTA Display!
             </h1>
         </a>
+        <h3>
+            Last Updated:&nbsp;&nbsp;<span id="last_updated"></span>
+        </h3>
     </div>
 </nav>
 <div id="station_1">
@@ -205,8 +208,5 @@
         </div>
     </div>
 </div>
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-
 </body>
 </html>

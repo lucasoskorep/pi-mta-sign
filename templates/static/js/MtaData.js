@@ -28,6 +28,12 @@ $(document).ready(function () {
     function updateStation(station, data) {
         updateDirections(station, data, "North");
         updateDirections(station, data, "South");
+        updateTime(data["LastUpdated"])
+    }
+
+    function updateTime(lastUpdated){
+        console.log(lastUpdated)
+        $("#last_updated").text(lastUpdated)
     }
 
     function updateDirections(station, data, direction) {

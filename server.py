@@ -1,12 +1,12 @@
-import logging
 import os
 import threading
-
-from flask import Flask, jsonify, render_template, request, abort
-from mta_manager import MTA
 import pandas as pd
 
+from deepdiff import DeepDiff
+from datetime import datetime
 from dotenv import load_dotenv
+from flask import Flask, jsonify, render_template, request, abort
+from mta_manager import MTA
 
 load_dotenv()
 
@@ -49,8 +49,10 @@ def get_mta_data():
     global subway_data
     station = request.json["station"]
     if station in subway_data:
+        mta_data = subway_data[station]
+        mta_data["LastUpdated"] = subway_data["LastUpdated"]
         return jsonify(
-            subway_data[station]
+            mta_data
         )
     else:
         abort(404)
@@ -71,16 +73,20 @@ def get_stop_id():
 if __name__ == "__main__":
     api_key = os.getenv('MTA_API_KEY', '')
 
-    mtaController = MTA(
-        api_key,
-        ["A", "C", "E", "1", "2", "3"],
-        ["127S", "127N", "A27N", "A27S"]
-    )
 
+    old_data = None
+    last_updated = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
     async def mta_callback(routes):
-        global subway_data
+        global subway_data, old_data, last_updated
         subway_data = link_to_station(mtaController.convert_routes_to_station_first(routes))
+        subway_data["LastUpdated"] = last_updated
+        if old_data is None:
+            old_data = subway_data
+        data_diff = DeepDiff(old_data, subway_data, ignore_order=True)
+        if data_diff != {}:
+            old_data = subway_data
+            last_updated = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         app.logger.info(f"Updated Subway Data - {subway_data}")
 
 
@@ -93,14 +99,19 @@ if __name__ == "__main__":
             self.run()
 
 
+    mtaController = MTA(
+        api_key,
+        ["A", "C", "E", "1", "2", "3"],
+        ["127S", "127N", "A27N", "A27S"]
+    )
+    mtaController.add_callback(mta_callback)
+
     def start_mta():
-        mtaController.add_callback(mta_callback)
         while True:
             try:
                 mtaController.start_updates()
             except Exception as e:
                 app.logger.info(f"Exception found in update function - {e}")
-
 
     threadLock = threading.Lock()
     threads = [threadWrapper(start_mta)]
@@ -109,10 +120,8 @@ if __name__ == "__main__":
         t.start()
 
     debug = os.getenv("DEBUG", 'False').lower() in ('true', '1', 't')
+    app.run(host="localhost", debug= True,  port=5000)
 
-    app.run(host="localhost", debug= False,  port=5000)
-
-    # Wait for all threads to complete
     for t in threads:
         t.join()
     print("Exiting Main Thread")
