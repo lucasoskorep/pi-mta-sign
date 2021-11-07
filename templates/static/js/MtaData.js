@@ -1,14 +1,6 @@
 $(document).ready(function () {
 
-    const interval = setInterval(function () {
-        updateData($('#station_1'))
-    }, 5000);
-    const interval2 = setInterval(function () {
-        updateData($('#station_2'))
-    }, 6000);
-
-    function updateData(station) {
-
+    function updateStationData(station) {
         $.ajax({
             type: "POST",
             url: '/mta_data',
@@ -24,6 +16,24 @@ $(document).ready(function () {
             }
         });
     }
+    function updateStartTime() {
+        $.ajax({
+            type: "get",
+            url: '/start_time',
+            // contentType: "application/json",
+            // dataType: "json",
+            async: true,
+            // data: JSON.stringify({"station": station.find('.station-name:first').get(0).innerText}, null, '\t'),
+            success: function (data, text) {
+                console.log("GETTING TIME")
+                console.log(data);
+                $("#start_time").text(data)
+            },
+            error: function (request, status, error) {
+                alert(request.responseText);
+            }
+        });
+    }
 
     function updateStation(station, data) {
         updateDirections(station, data, "North");
@@ -31,7 +41,7 @@ $(document).ready(function () {
         updateTime(data["LastUpdated"])
     }
 
-    function updateTime(lastUpdated){
+    function updateTime(lastUpdated) {
         console.log(lastUpdated)
         $("#last_updated").text(lastUpdated)
     }
@@ -66,25 +76,30 @@ $(document).ready(function () {
 
             $(listItem).show()
             $(listItem).find("img").attr("src", "/static/images/lines/" + train + ".svg")
-        } else if (train === "N/A"){
+        } else if (train === "N/A") {
             console.log("Route Is NA - Disabling Route")
             console.log($(listItem))
             $(listItem).hide()
         }
-
-
     }
 
     function imageExists(image_url) {
-
         var http = new XMLHttpRequest();
-
         http.open('HEAD', image_url, false);
         http.send();
-
         return http.status != 404;
 
     }
+
+    const interval = setInterval(function () {
+        updateStationData($('#station_1'))
+    }, 5000);
+    const interval2 = setInterval(function () {
+        updateStationData($('#station_2'))
+    }, 6000);
+    updateStartTime();
+
+
 });
 
 function setStation(ele) {

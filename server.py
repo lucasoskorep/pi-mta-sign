@@ -17,17 +17,7 @@ app._static_folder = os.path.abspath("templates/static/")
 stops = pd.read_csv("stops.txt")
 stop_ids = ["127S", "127N", "A27N", "A27S"]
 
-
-@app.route("/", methods=["GET"])
-def index():
-    # TODO: Shove this into a sqlite database
-    station_names = sorted(list(set(stops["stop_name"].to_list())))
-    return render_template(
-        "layouts/index.html",
-        station_names=station_names,
-        station_1="42 St-Port Authority Bus Terminal",
-        station_2="Times Sq-42 St"
-    )
+start_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
 
 def link_to_station(data):
@@ -42,6 +32,23 @@ def link_to_station(data):
         elif "S" in key:
             linked_data[stop_name]["South"] = value
     return linked_data
+
+
+@app.route("/", methods=["GET"])
+def index():
+    # TODO: Shove this into a sqlite database
+    station_names = sorted(list(set(stops["stop_name"].to_list())))
+    return render_template(
+        "layouts/index.html",
+        station_names=station_names,
+        station_1="42 St-Port Authority Bus Terminal",
+        station_2="Times Sq-42 St"
+    )
+
+
+@app.route("/start_time", methods=["GET"])
+def get_start_time():
+    return start_time
 
 
 @app.route("/mta_data", methods=["POST"])
@@ -73,9 +80,9 @@ def get_stop_id():
 if __name__ == "__main__":
     api_key = os.getenv('MTA_API_KEY', '')
 
-
     old_data = None
     last_updated = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
 
     async def mta_callback(routes):
         global subway_data, old_data, last_updated
@@ -106,12 +113,14 @@ if __name__ == "__main__":
     )
     mtaController.add_callback(mta_callback)
 
+
     def start_mta():
         while True:
             try:
                 mtaController.start_updates()
             except Exception as e:
                 app.logger.info(f"Exception found in update function - {e}")
+
 
     threadLock = threading.Lock()
     threads = [threadWrapper(start_mta)]
@@ -120,7 +129,7 @@ if __name__ == "__main__":
         t.start()
 
     debug = os.getenv("DEBUG", 'False').lower() in ('true', '1', 't')
-    app.run(host="localhost", debug= True,  port=5000)
+    app.run(host="localhost", debug=True, port=5000)
 
     for t in threads:
         t.join()
