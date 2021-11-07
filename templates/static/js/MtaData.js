@@ -8,11 +8,11 @@ $(document).ready(function () {
             dataType: "json",
             async: true,
             data: JSON.stringify({"station": station.find('.station-name:first').get(0).innerText}, null, '\t'),
-            success: function (data, text) {
+            success: function (data) {
                 updateStation(station, data)
             },
-            error: function (request, status, error) {
-                alert(request.responseText);
+            error: function (request) {
+                console.log(request.responseText);
             }
         });
     }
@@ -20,17 +20,14 @@ $(document).ready(function () {
         $.ajax({
             type: "get",
             url: '/start_time',
-            // contentType: "application/json",
-            // dataType: "json",
             async: true,
-            // data: JSON.stringify({"station": station.find('.station-name:first').get(0).innerText}, null, '\t'),
-            success: function (data, text) {
+            success: function (data) {
                 console.log("GETTING TIME")
                 console.log(data);
                 $("#start_time").text(data)
             },
-            error: function (request, status, error) {
-                alert(request.responseText);
+            error: function (request) {
+                console.log(request.responseText);
             }
         });
     }
