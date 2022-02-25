@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from mta import MTA
+from mta_manager import MTA
 import threading
 import time
 from time import sleep
@@ -17,10 +17,11 @@ mtaController = MTA(
 
 
 
-async def mta_callback(routes):
+async def mta_callback(trains):
     print("We are inside of the call back now")
-    print(len(routes))
-    pprint(mtaController.convert_routes_to_station_first(routes))
+    print(len(trains))
+    pprint([str(route) for route in trains])
+    pprint(mtaController.get_time_arriving_at_stations(trains))
 
 class threadWrapper(threading.Thread):
     def __init__(self, run):
