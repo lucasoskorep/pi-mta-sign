@@ -2,10 +2,7 @@
 from datetime import datetime
 from math import trunc
 
-def get_stop_from_dict(obj):
-    if "arrival" in obj and "departure" in obj and "stop_id" in obj:
-        return Stop( obj["stop_id"], obj["arrival"]["time"], obj["departure"]["time"])
-    return None
+
 
 
 class Stop(object):
@@ -22,3 +19,9 @@ class Stop(object):
         time = datetime.fromtimestamp(self.arrival_time)
         time_minutes = trunc(((time - now).total_seconds()) / 60)
         return f"stop_id:{self.id}| arr:{time_minutes}| dep:{self.departure_time}"
+
+    @staticmethod
+    def get_stop_from_dict(obj):
+        if "arrival" in obj and "departure" in obj and "stop_id" in obj:
+            return Stop(obj["stop_id"], obj["arrival"]["time"], obj["departure"]["time"])
+        return None

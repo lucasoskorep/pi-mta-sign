@@ -4,8 +4,8 @@ import json
 
 from google.transit import gtfs_realtime_pb2
 from protobuf_to_dict import protobuf_to_dict
-from .train import get_train_from_dict
 from time import time
+from train import Train
 
 
 class MTA(object):
@@ -52,7 +52,7 @@ class MTA(object):
             feed = gtfs_realtime_pb2.FeedMessage()
             feed.ParseFromString(r.content)
             subway_feed = protobuf_to_dict(feed)['entity']
-            trains.extend([train for train in [get_train_from_dict(train_dict) for train_dict in subway_feed] if train is not None])
+            trains.extend([train for train in [Train.get_train_from_dict(train_dict) for train_dict in subway_feed] if train is not None])
         return trains
 
 
