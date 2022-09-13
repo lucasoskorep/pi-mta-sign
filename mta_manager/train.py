@@ -1,4 +1,4 @@
-from stop import Stop
+from .stop import Stop
 
 class Train(object):
     def __init__(self, id, route, stops):

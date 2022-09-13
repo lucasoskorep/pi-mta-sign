@@ -5,14 +5,14 @@ import json
 from google.transit import gtfs_realtime_pb2
 from protobuf_to_dict import protobuf_to_dict
 from time import time
-from train import Train
+from .train import Train
 
 
 class MTA(object):
     # Create a data filter object.
     # Then be able to update that object on the fly.
     # This filter should return all possible trains and stations by default.
-    # If anyhting is added it gets filtered out.
+    # If anything is added it gets filtered out.
     def __init__(self, api_key: str, routes, station_ids, timing_callbacks=None, alert_callbacks=None,
                  endpoints_file="./endpoints.json", callback_frequency=10, max_arrival_time=30):
         self.header = {
