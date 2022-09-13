@@ -20,7 +20,7 @@ stop_ids = ["127S", "127N", "A27N", "A27S"]
 start_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
 
-def link_to_station(data):
+def link_to_station(data) -> {}:
     linked_data = {}
     for key, value in data.items():
         stop_name = stops.loc[stops["stop_id"] == key]
@@ -84,9 +84,9 @@ if __name__ == "__main__":
     last_updated = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
 
-    async def mta_callback(routes):
+    async def mta_callback(trains):
         global subway_data, old_data, last_updated
-        subway_data = link_to_station(mtaController.station_info_from_routes(routes))
+        subway_data = link_to_station(mtaController.get_time_arriving_at_stations(trains))
         subway_data["LastUpdated"] = last_updated
         if old_data is None:
             old_data = subway_data
