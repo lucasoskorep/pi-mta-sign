@@ -15,8 +15,6 @@ mtaController = MTA(
     ["127S", "127N", "A27N", "A27S"]
 )
 
-
-
 async def mta_callback(trains):
     print("We are inside of the call back now")
     print(len(trains))
