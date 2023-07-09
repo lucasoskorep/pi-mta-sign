@@ -73,7 +73,7 @@ def get_routes():
 @app.route("/get_stop_id", methods=["POST"])
 def get_stop_id():
     stop_name = request.json["stop_name"]
-    rows = stops.loc[stops["stop_name"] == stop_name]
+    stops.loc[stops["stop_name"] == stop_name]
     return jsonify({"station_changed": True})
 
 

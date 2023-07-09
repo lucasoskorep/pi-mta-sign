@@ -52,9 +52,9 @@ class MTA(object):
             feed = gtfs_realtime_pb2.FeedMessage()
             feed.ParseFromString(r.content)
             subway_feed = protobuf_to_dict(feed)['entity']
-            trains.extend([train for train in [Train.get_train_from_dict(train_dict) for train_dict in subway_feed] if train is not None])
+            trains.extend([train for train in [Train.get_train_from_dict(train_dict) for train_dict in subway_feed] if
+                           train is not None])
         return trains
-
 
     @staticmethod
     def get_trains_for_routes(routes, trains):
@@ -64,11 +64,8 @@ class MTA(object):
     def get_trains_for_route(route, trains):
         return MTA.get_trains_for_routes([route], trains)
 
-
     async def get_train_information(self):
-        # Might need to not filter these trains.
         valid_trains = [train for train in await self.get_data() if True]
-                        # MTA.trains_arriving_at_stations(self.train_lines, self.station_ids, train, self.max_arrival_time)]
         return valid_trains
 
     async def _get_updates(self):
@@ -109,7 +106,8 @@ class MTA(object):
         for station_id in self.station_ids:
             line_first = {}
             for route in self.routes:
-                valid_trains = [train.get_arrival_at(station_id) for train in MTA.get_trains_for_route(route, trains) if train.arriving_at_station_in_time(station_id, self.max_arrival_time)]
+                valid_trains = [train.get_arrival_at(station_id) for train in MTA.get_trains_for_route(route, trains) if
+                                train.arriving_at_station_in_time(station_id, self.max_arrival_time)]
                 if valid_trains:
                     line_first[route] = valid_trains
             if line_first:
