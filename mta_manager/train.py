@@ -19,11 +19,11 @@ class Train(object):
                 return trip_arrival_in_minutes(stop_time_update)
         return None
 
-
     def _get_route(self) -> str:
         return self.train_proto.trip_update.trip.route_id
+
     def get_route(self) -> Route:
-       return Route(self.train_proto.trip_update.trip.route_id)
+        return Route(self.train_proto.trip_update.trip.route_id)
 
     def has_trips(self) -> bool:
         return self.train_proto.trip_update is not None \
@@ -31,4 +31,3 @@ class Train(object):
 
     def __str__(self):
         return f"{self.train_proto}"
-

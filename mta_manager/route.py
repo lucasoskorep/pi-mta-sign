@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Route(Enum):
     A = "A"
     C = "C"
@@ -31,6 +32,9 @@ class Route(Enum):
     L = "L"
     SIR = "SIR"
 
+
 _routes = set(item.value for item in Route)
+
+
 def is_valid_route(route: str) -> bool:
     return route in _routes

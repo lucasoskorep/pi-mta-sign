@@ -1,65 +1,47 @@
+import logging
 import os
-from datetime import datetime
 
-import pandas as pd
-from flask_apscheduler import APScheduler
+from datetime import datetime
+from fastapi import FastAPI
+from fastapi_utils.tasks import repeat_every
+
+# import pandas as pd
 from dotenv import load_dotenv
-from flask import Flask, jsonify, render_template, request
 
 from mta_manager import MTA, Feed, Route
 
 load_dotenv()
 
-app = Flask(__name__)
-app.secret_key = "SuperSecretDontEvenTryToGuessMeGGEZNoRe"
-app._static_folder = os.path.abspath("templates/static/")
 
-scheduler = APScheduler()
-scheduler.init_app(app)
+api_key = os.getenv('MTA_API_KEY', '')
+
+app = FastAPI()
+logger = logging.getLogger(__name__)  # the __name__ resolve to "main" since we are at the root of the project.
 
 
-stops = pd.read_csv("stops.txt")
 start_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+last_updated = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+mtaController = MTA(
+    api_key,
+    feeds=[Feed.ACE, Feed.N1234567]
+)
 
 ROUTES = [Route.A, Route.C, Route.E, Route.N1, Route.N2, Route.N3]
 STATION_STOP_IDs = ["127S", "127N", "A27N", "A27S"]
 
 
-def link_to_station(data) -> {}:
-    linked_data = {}
-    for key, value in data.items():
-        stop_name = stops.loc[stops["stop_id"] == key]
-        stop_name = stop_name["stop_name"].values[0]
-        if stop_name not in linked_data:
-            linked_data[stop_name] = {}
-        if "N" in key:
-            linked_data[stop_name]["North"] = value
-        elif "S" in key:
-            linked_data[stop_name]["South"] = value
-    return linked_data
 
-
-@app.route("/", methods=["GET"])
-def index():
-    # TODO: Shove this into a sqlite database
-    station_names = sorted(list(set(stops["stop_name"].to_list())))
-    return render_template(
-        "layouts/index.html",
-        station_names=station_names,
-        station_1="42 St-Port Authority Bus Terminal",
-        station_2="Times Sq-42 St"
-    )
-
-
-@app.route("/start_time", methods=["GET"])
+@app.post("/start_time")
 def get_start_time():
     return start_time
 
 
-@app.route("/mta_data", methods=["POST"])
+@app.post("/mta_data")
 async def get_mta_data():
     # if len(mtaController.trains) == 0:
     #     _ = update_trains()
+    logger.error("HELLO WORLD")
     arrival_by_station_and_route = {}
     for stop_id in STATION_STOP_IDs:
         arrival_by_station_and_route[stop_id] = {}
@@ -69,33 +51,8 @@ async def get_mta_data():
                 arrival_by_station_and_route[stop_id][route.value] = arrival_tiems
     return arrival_by_station_and_route
 
-
-@app.route("/get_stop_id", methods=["POST"])
-def get_stop_id():
-    stop_name = request.json["stop_name"]
-    stops.loc[stops["stop_name"] == stop_name]
-    return jsonify({"station_changed": True})
-
-
-
-if __name__ == "__main__":
-    api_key = os.getenv('MTA_API_KEY', '')
-
-    old_data = None
-    last_updated = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-
-    mtaController = MTA(
-        api_key,
-        feeds=[Feed.ACE, Feed.N1234567]
-    )
-    def update_trains():
-        app.logger.debug("UPDATING TRAINS")
-        mtaController.update_trains()
-
-    scheduler.add_job("train_updater", func=update_trains, trigger="interval", seconds=10)
-    scheduler.start()
-
-    debug = os.getenv("DEBUG", 'False').lower() in ('true', '1', 't')
-    app.run(host="localhost", debug=True, port=5000, use_reloader=False)
-
-    print("Exiting Main Thread")
+@app.on_event("startup")
+@repeat_every(seconds=5)
+async def update_trains():
+    logger.info("UPDATING TRAINS")
+    mtaController.update_trains()
