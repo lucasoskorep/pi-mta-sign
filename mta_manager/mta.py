@@ -20,7 +20,7 @@ class MTA(object):
     def stop_updates(self):
         self.is_running = False
 
-    def get_incoming_trains(self) -> [Train]:
+    def update_trains(self) -> [Train]:
         trains = []
         for feed in self.feeds:
             r = requests.get(feed.value, headers=self.header)
@@ -39,7 +39,7 @@ class MTA(object):
         for train in self.trains:
             if train.get_route() is route:
                 arrival = train.get_arrival_at(station)
-                if arrival is not None and arrival < self.max_arrival_time:
+                if arrival is not None and arrival < self.max_arrival_time and arrival > 0:
                     arrival_times.append(arrival)
         return sorted(arrival_times)
 

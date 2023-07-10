@@ -58,8 +58,8 @@ def get_start_time():
 
 @app.route("/mta_data", methods=["POST"])
 async def get_mta_data():
-    if len(mtaController.trains) == 0:
-        _ = update_trains()
+    # if len(mtaController.trains) == 0:
+    #     _ = update_trains()
     arrival_by_station_and_route = {}
     for stop_id in STATION_STOP_IDs:
         arrival_by_station_and_route[stop_id] = {}
@@ -90,7 +90,7 @@ if __name__ == "__main__":
     )
     def update_trains():
         app.logger.debug("UPDATING TRAINS")
-        mtaController.get_incoming_trains()
+        mtaController.update_trains()
 
     scheduler.add_job("train_updater", func=update_trains, trigger="interval", seconds=10)
     scheduler.start()

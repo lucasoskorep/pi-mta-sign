@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "pi-mta-sign"
+version = "1.0.0"
+description = ""
+authors = ["lucas.oskorep <lucas.oskorep@gmail.com>"]
+readme = "README.md"
+packages = [{include = "pi_mta_sign"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.31.0"
+gtfs-realtime-bindings = "^1.0.0"
+flask-apscheduler = "^1.12.4"
+python-dotenv = "^1.0.0"
+pandas = "^2.0.3"
+flask = {extras = ["async"], version = "^2.3.2"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
