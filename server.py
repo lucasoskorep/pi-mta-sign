@@ -1,12 +1,12 @@
 import os
-import threading
-import pandas as pd
-
-from deepdiff import DeepDiff
 from datetime import datetime
+
+import pandas as pd
+from flask_apscheduler import APScheduler
 from dotenv import load_dotenv
-from flask import Flask, jsonify, render_template, request, abort
-from mta_manager import MTA
+from flask import Flask, jsonify, render_template, request
+
+from mta_manager import MTA, Feed, Route
 
 load_dotenv()
 
@@ -14,10 +14,15 @@ app = Flask(__name__)
 app.secret_key = "SuperSecretDontEvenTryToGuessMeGGEZNoRe"
 app._static_folder = os.path.abspath("templates/static/")
 
-stops = pd.read_csv("stops.txt")
-stop_ids = ["127S", "127N", "A27N", "A27S"]
+scheduler = APScheduler()
+scheduler.init_app(app)
 
+
+stops = pd.read_csv("stops.txt")
 start_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+ROUTES = [Route.A, Route.C, Route.E, Route.N1, Route.N2, Route.N3]
+STATION_STOP_IDs = ["127S", "127N", "A27N", "A27S"]
 
 
 def link_to_station(data) -> {}:
@@ -52,22 +57,17 @@ def get_start_time():
 
 
 @app.route("/mta_data", methods=["POST"])
-def get_mta_data():
-    global subway_data
-    station = request.json["station"]
-    if station in subway_data:
-        mta_data = subway_data[station]
-        mta_data["LastUpdated"] = subway_data["LastUpdated"]
-        return jsonify(
-            mta_data
-        )
-    else:
-        abort(404)
-
-
-@app.route("/stops", methods=["GET"])
-def get_routes():
-    return jsonify()
+async def get_mta_data():
+    if len(mtaController.trains) == 0:
+        _ = update_trains()
+    arrival_by_station_and_route = {}
+    for stop_id in STATION_STOP_IDs:
+        arrival_by_station_and_route[stop_id] = {}
+        for route in ROUTES:
+            arrival_tiems = mtaController.get_arrival_times(route, stop_id)
+            if len(arrival_tiems) > 0:
+                arrival_by_station_and_route[stop_id][route.value] = arrival_tiems
+    return arrival_by_station_and_route
 
 
 @app.route("/get_stop_id", methods=["POST"])
@@ -77,60 +77,25 @@ def get_stop_id():
     return jsonify({"station_changed": True})
 
 
+
 if __name__ == "__main__":
     api_key = os.getenv('MTA_API_KEY', '')
 
     old_data = None
     last_updated = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
-
-    async def mta_callback(trains):
-        global subway_data, old_data, last_updated
-        subway_data = link_to_station(mtaController.get_time_arriving_at_stations(trains))
-        subway_data["LastUpdated"] = last_updated
-        if old_data is None:
-            old_data = subway_data
-        data_diff = DeepDiff(old_data, subway_data, ignore_order=True)
-        if data_diff != {}:
-            old_data = subway_data
-            last_updated = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        app.logger.info(f"Updated Subway Data - {subway_data}")
-
-
-    class threadWrapper(threading.Thread):
-        def __init__(self, run):
-            threading.Thread.__init__(self)
-            self.run = run
-
-        def run(self):
-            self.run()
-
-
     mtaController = MTA(
         api_key,
-        ["A", "C", "E", "1", "2", "3"],
-        ["127S", "127N", "A27N", "A27S"]
+        feeds=[Feed.ACE, Feed.N1234567]
     )
-    mtaController.add_callback(mta_callback)
+    def update_trains():
+        app.logger.debug("UPDATING TRAINS")
+        mtaController.get_incoming_trains()
 
-
-    def start_mta():
-        while True:
-            try:
-                mtaController.start_updates()
-            except Exception as e:
-                app.logger.info(f"Exception found in update function - {e}")
-
-
-    threadLock = threading.Lock()
-    threads = [threadWrapper(start_mta)]
-
-    for t in threads:
-        t.start()
+    scheduler.add_job("train_updater", func=update_trains, trigger="interval", seconds=10)
+    scheduler.start()
 
     debug = os.getenv("DEBUG", 'False').lower() in ('true', '1', 't')
-    app.run(host="localhost", debug=True, port=5000)
+    app.run(host="localhost", debug=True, port=5000, use_reloader=False)
 
-    for t in threads:
-        t.join()
     print("Exiting Main Thread")
