@@ -1,4 +1,3 @@
-
 from google.transit import gtfs_realtime_pb2
 from .stop import trip_arrival_in_minutes
 from .route import Route, is_valid_route
@@ -31,6 +30,5 @@ class Train(object):
             and len(self.train_proto.trip_update.stop_time_update) > 0 and is_valid_route(self._get_route())
 
     def __str__(self):
-        formatted_stops = '\n'.join([str(stop) for stop in self.stops])
-        return f"train_id:{self.id} | line_name:{self.route}| stops:\n {formatted_stops}"
+        return f"{self.train_proto}"
 
