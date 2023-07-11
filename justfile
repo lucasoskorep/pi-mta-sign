@@ -7,4 +7,4 @@
 
 # Setup project
 @run:
-  poetry run uvicorn main:app --reload
+  poetry run uvicorn server:app --reload --port 8000
