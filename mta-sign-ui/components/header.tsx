@@ -1,16 +1,17 @@
 'use client'
 import React, {useEffect, useState} from 'react';
-import {fetchStationData} from "@/services/api/mta-server";
+import {fetchStartDate} from "@/services/mta-api/mta-server";
+import {MtaStartTime} from "@/services/mta-api/types";
 
 
 const TitleBar = () => {
-    const [data, setData] = useState(null);
+    const [data, setData] = useState<MtaStartTime|null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 console.log("CALLING API")
-                const mtaData = await fetchStationData([""])
+                const mtaData = await fetchStartDate([""])
                 setData( mtaData)
 
             } catch (error) {

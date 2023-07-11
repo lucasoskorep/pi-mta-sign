@@ -9,6 +9,7 @@ from fastapi_utils.tasks import repeat_every
 
 # import pandas as pd
 from dotenv import load_dotenv
+from starlette.responses import JSONResponse
 
 from mta_manager import MTA, Feed, Route
 
@@ -26,8 +27,8 @@ app.add_middleware(
 logger = logging.getLogger(__name__)  # the __name__ resolve to "main" since we are at the root of the project.
 
 
-start_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-last_updated = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+start_time = datetime.now()
+last_updated = datetime.now()
 
 mtaController = MTA(
     api_key,
@@ -40,7 +41,7 @@ STATION_STOP_IDs = ["127S", "127N", "A27N", "A27S"]
 
 @app.post("/api/start_time")
 def get_start_time():
-    return start_time
+    return start_time.isoformat()
 
 @app.post("/api/mta_data")
 async def get_mta_data():
@@ -53,7 +54,7 @@ async def get_mta_data():
             arrival_times = mtaController.get_arrival_times(route, stop_id)
             if len(arrival_times) > 0:
                 arrival_by_station_and_route[stop_id][route.value] = arrival_times
-    return arrival_by_station_and_route
+    return JSONResponse(arrival_by_station_and_route)
 
 @app.on_event("startup")
 @repeat_every(seconds=5)
