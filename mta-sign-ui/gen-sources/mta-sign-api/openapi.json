@@ -1,0 +1,287 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FastAPI",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/start_time": {
+      "post": {
+        "tags": [
+          "start"
+        ],
+        "summary": "Get Start Time",
+        "operationId": "get_start_time_api_start_time_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mta/{stop_id}/{route}": {
+      "post": {
+        "tags": [
+          "mta-data"
+        ],
+        "summary": "Get Route",
+        "operationId": "get_route_api_mta__stop_id___route__post",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Stop Id"
+            },
+            "name": "stop_id",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Route"
+            },
+            "name": "route",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouteResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mta/{stop_id}": {
+      "post": {
+        "tags": [
+          "mta-data"
+        ],
+        "summary": "Get Station",
+        "operationId": "get_station_api_mta__stop_id__post",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Stop Id"
+            },
+            "name": "stop_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mta": {
+      "post": {
+        "tags": [
+          "mta-data"
+        ],
+        "summary": "Get All",
+        "operationId": "get_all_api_mta_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllStationModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/config": {
+      "get": {
+        "tags": [
+          "config"
+        ],
+        "summary": "Get All",
+        "operationId": "get_all_api_config_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AllStationModel": {
+        "properties": {
+          "stations": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StationResponse"
+            },
+            "type": "object",
+            "title": "Stations"
+          }
+        },
+        "type": "object",
+        "required": [
+          "stations"
+        ],
+        "title": "AllStationModel"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Route": {
+        "enum": [
+          "A",
+          "C",
+          "E",
+          "B",
+          "D",
+          "F",
+          "M",
+          "G",
+          "J",
+          "Z",
+          "N",
+          "Q",
+          "R",
+          "W",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "L",
+          "SIR"
+        ],
+        "title": "Route",
+        "description": "An enumeration."
+      },
+      "RouteResponse": {
+        "properties": {
+          "arrival_times": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Arrival Times"
+          }
+        },
+        "type": "object",
+        "required": [
+          "arrival_times"
+        ],
+        "title": "RouteResponse"
+      },
+      "StationResponse": {
+        "properties": {
+          "routes": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/RouteResponse"
+            },
+            "type": "object",
+            "title": "Routes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "routes"
+        ],
+        "title": "StationResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import {MtaData, MtaStartTime} from "@/services/mta-api/types";
 
 export const fetchStationData = async (stations: [string]): Promise<MtaData> => {
-    const res = await fetch("/api/mta_data", {method: "POST"})
+    const res = await fetch("/api/mta", {method: "POST"})
     const data = await res.json()
     return {
         mtaData: data

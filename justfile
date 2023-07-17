@@ -7,4 +7,13 @@
 
 # Setup project
 @run:
-  poetry run uvicorn server:app --reload --port 8000
+  poetry run python main.py
+
+
+# Lint project with ruff linter
+@lint:
+  poetry run ruff .
+
+# Auto fix lint with ruff
+@lint-fix:
+  poetry run ruff . --fix

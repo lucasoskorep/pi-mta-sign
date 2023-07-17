@@ -1,10 +1,11 @@
 'use client'
+
 import React, {useEffect, useState} from 'react';
 import {fetchStartDate} from "@/services/mta-api/mta-server";
 import {MtaStartTime} from "@/services/mta-api/types";
 import Image from 'next/image';
 
-const TitleBar = () => {
+const Header = () => {
     const [data, setData] = useState<MtaStartTime | null>(null);
 
     useEffect(() => {
@@ -13,7 +14,6 @@ const TitleBar = () => {
                 console.log("CALLING API")
                 const mtaData = await fetchStartDate([""])
                 setData(mtaData)
-
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -53,4 +53,4 @@ const TitleBar = () => {
     );
 };
 
-export default TitleBar;
+export default Header;
