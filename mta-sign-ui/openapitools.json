@@ -5,7 +5,7 @@
     "version": "6.6.0",
     "generators": {
       "mta-sign-api": {
-        "generatorName": "typescript-fetch",
+        "generatorName": "typescript-axios",
         "output": "#{cwd}/gen-sources/mta-sign-api/",
         "glob": "gen-sources/mta-sign-api/openapi.{json,yaml}",
         "additionalProperties": "supportsES6=true,typescriptThreePlus=true"

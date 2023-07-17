@@ -6,14 +6,16 @@ import {MtaStartTime} from "@/services/mta-api/types";
 import Image from 'next/image';
 
 const Header = () => {
-    const [data, setData] = useState<MtaStartTime | null>(null);
+    const [startDate, setStartDate] = useState<MtaStartTime | null>(null);
+    const [lastUpdatedDate, setLastUpdatedDate] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 console.log("CALLING API")
                 const mtaData = await fetchStartDate([""])
-                setData(mtaData)
+                setStartDate(mtaData)
+                setLastUpdatedDate(new Date().toLocaleString("en-US"))
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -38,16 +40,16 @@ const Header = () => {
             <div className="lg:flex-grow"></div>
             <div className="lg:text-right text-center lg:p-2">
 
-                {data ? (
+                {startDate ? (
                     <h2 className="text-lg lg:text-xl font-bold dark:text-white">Started
-                        At: <span>{data.startTime.toLocaleString("en-US")}</span></h2>
+                        At: <span>{startDate.startTime.toLocaleString("en-US")}</span></h2>
 
                 ) : (
                     <p>Loading data...</p>
                 )}
 
                 <h2 className="text-lg lg:text-xl font-bold dark:text-white">Updated
-                    At: <span>{new Date().toLocaleString("en-US")}</span></h2>
+                    At: <span>{lastUpdatedDate}</span></h2>
             </div>
         </div>
     );

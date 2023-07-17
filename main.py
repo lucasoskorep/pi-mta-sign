@@ -4,7 +4,6 @@ import uvicorn
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from fastapi.openapi.utils import get_openapi
 from starlette.middleware.cors import CORSMiddleware
 from mta_sign_server.router import router as default_router
 from mta_sign_server.mta.router import router as mta_router
