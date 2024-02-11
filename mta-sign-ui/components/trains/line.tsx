@@ -1,12 +1,13 @@
 'use client'
-import React, {useEffect, useState} from 'react';
-import {fetchStartDate} from "@/services/mta-api/mta-server";
+import React, {useState} from 'react';
+// import {fetchStartDate} from "@/services/mta-api/mta-server";
 import {MtaStartTime} from "@/services/mta-api/types";
-import Image from 'next/image';
+// import Image from 'next/image';
+import {RouteResponse} from "@/gen-sources/mta-sign-api";
 
-const Line = () => {
+const Line = (props: RouteResponse) => {
     // const [data, setData] = useState<MtaStartTime | null>(null);
-
+    //
     // useEffect(() => {
     //     const fetchData = async () => {
     //         try {
@@ -24,7 +25,7 @@ const Line = () => {
 
     return (
         <div className="align-middle lg:flex  w-full">
-            TRAIN LINE HERE
+            TRAIN LINE HERE - {props.arrival_times.toJSON().toString()}
         </div>
     );
 };

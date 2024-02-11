@@ -26,15 +26,15 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base';
 /**
  * 
  * @export
- * @interface AllStationModel
+ * @interface AllStationResponse
  */
-export interface AllStationModel {
+export interface AllStationResponse {
     /**
      * 
-     * @type {{ [key: string]: StationResponse; }}
-     * @memberof AllStationModel
+     * @type {any}
+     * @memberof AllStationResponse
      */
-    'stations': { [key: string]: StationResponse; };
+    'stations': any;
 }
 /**
  * 
@@ -64,11 +64,19 @@ export interface Route {
 export interface RouteResponse {
     /**
      * 
+     * @type {Route}
+     * @memberof RouteResponse
+     */
+    'routeId': Route;
+    /**
+     * 
      * @type {any}
      * @memberof RouteResponse
      */
     'arrival_times': any;
 }
+
+
 /**
  * 
  * @export
@@ -77,10 +85,16 @@ export interface RouteResponse {
 export interface StationResponse {
     /**
      * 
-     * @type {{ [key: string]: RouteResponse; }}
+     * @type {any}
      * @memberof StationResponse
      */
-    'routes': { [key: string]: RouteResponse; };
+    'stationId': any;
+    /**
+     * 
+     * @type {any}
+     * @memberof StationResponse
+     */
+    'routes': any;
 }
 /**
  * 
@@ -330,7 +344,7 @@ export const MtaDataApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAllApiMtaPost(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AllStationModel>> {
+        async getAllApiMtaPost(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AllStationResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAllApiMtaPost(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -373,7 +387,7 @@ export const MtaDataApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAllApiMtaPost(options?: any): AxiosPromise<AllStationModel> {
+        getAllApiMtaPost(options?: any): AxiosPromise<AllStationResponse> {
             return localVarFp.getAllApiMtaPost(options).then((request) => request(axios, basePath));
         },
         /**

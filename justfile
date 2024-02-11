@@ -17,3 +17,6 @@
 # Auto fix lint with ruff
 @lint-fix:
   poetry run ruff . --fix
+
+@containers:
+  podman build -f python.dockerfile -t pi-mta-sign:latest . --load

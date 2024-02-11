@@ -6,7 +6,7 @@ from fastapi_utils.tasks import repeat_every
 from starlette import status
 
 from mta_api_client import Route, MTA, Feed
-from mta_sign_server.mta.schemas import StationResponse, RouteResponse, AllStationModel
+from mta_sign_server.mta.schemas import StationResponse, RouteResponse, AllStationResponse
 
 router = APIRouter(
     tags=["mta-data"],
@@ -45,19 +45,20 @@ def get_station(stop_id: str):
     raise HTTPException(status_code=404, detail="no trains or routes found for stop id")
 
 
-@router.post("/api/mta", response_model=AllStationModel, status_code=status.HTTP_200_OK)
+@router.post("/api/mta", response_model=AllStationResponse, status_code=status.HTTP_200_OK)
 def get_all():
     print("HELLO WORLD")
-    all_stations = {}
+    all_stations = []
     for stop_id in STATION_STOP_IDs:
-        routes = {}
+        routes = []
         for route in ROUTES:
             arrival_times = mtaController.get_arrival_times(route, stop_id)
             if len(arrival_times) > 0:
-                routes[route] = RouteResponse(arrival_times=arrival_times)
-        all_stations[stop_id] = StationResponse(routes=routes)
+                routes.append(RouteResponse(routeId=route, arrival_times=arrival_times))
+        all_stations.append(StationResponse(stationId=stop_id, routes=routes))
+    print(all_stations)
     if all_stations:
-        return AllStationModel(stations=all_stations)
+        return AllStationResponse(stations=all_stations)
     raise HTTPException(status_code=404, detail="no arriving trains found for all configured routes")
 
 

@@ -1,16 +1,18 @@
 from pydantic import BaseModel
-from typing import List, Dict
+from typing import List
 
 from mta_api_client import Route
 
 
 class RouteResponse(BaseModel):
+    routeId: Route
     arrival_times: List[int]
 
 
 class StationResponse(BaseModel):
-    routes: Dict[Route, RouteResponse]
+    stationId: str
+    routes: List[RouteResponse]
 
 
-class AllStationModel(BaseModel):
-    stations: Dict[str, StationResponse]
+class AllStationResponse(BaseModel):
+    stations: List[StationResponse]
