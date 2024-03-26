@@ -23,8 +23,6 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 
-
-
 [tool.ruff]
 # Enable the pycodestyle (`E`) and Pyflakes (`F`) rules by default.
 # Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or

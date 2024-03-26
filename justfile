@@ -19,4 +19,6 @@
   poetry run ruff . --fix
 
 @containers:
-  podman build -f python.dockerfile -t pi-mta-sign:latest . --load
+  podman build --platform linux/arm64,linux/amd64 -f docker/python.dockerfile --manifest chaos2theory/pi-mta-sign:test .
+  podman manifest push --all chaos2theory/pi-mta-sign:test
+  podman manifest rm chaos2theory/pi-mta-sign:test
