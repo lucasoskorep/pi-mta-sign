@@ -10,16 +10,19 @@ interface Route {
 interface DirectionCardProps {
     direction: 'North' | 'South'
     routes: Route[]
+    isEndOfLine?: boolean
 }
 
-const DirectionCard = ({ direction, routes }: DirectionCardProps) => {
+const DirectionCard = ({ direction, routes, isEndOfLine = false }: DirectionCardProps) => {
     return (
         <div className="bg-gray-800 overflow-hidden flex-1">
-            <div className="bg-gray-700 px-3 py-2 md:px-4 md:py-3 lg:px-6 lg:py-4">
-                <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white">
-                    {direction}
-                </h2>
-            </div>
+            {!isEndOfLine && (
+                <div className="bg-gray-700 px-3 py-2 md:px-4 md:py-3 lg:px-6 lg:py-4">
+                    <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white">
+                        {direction}
+                    </h2>
+                </div>
+            )}
             <div className="divide-y divide-gray-700">
                 {routes && routes.length > 0 ? (
                     routes.map((route, index) => (

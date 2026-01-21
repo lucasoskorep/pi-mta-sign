@@ -57,19 +57,34 @@ export default function StationCard({ configId, initialConfig, availableLines, o
     const fetchStationData = useCallback(async () => {
         if (!selectedStation) return
 
-        try {
-            if (showNorth) {
+        if (showNorth) {
+            try {
                 const response = await axios.post(`/api/mta/${selectedStation.id}N`)
                 setNorthData(response.data)
+            } catch (err) {
+                console.error('Error fetching north station data:', err)
+                setNorthData(null)
             }
-            if (showSouth) {
+        }
+
+        if (showSouth) {
+            try {
                 const response = await axios.post(`/api/mta/${selectedStation.id}S`)
                 setSouthData(response.data)
+            } catch (err) {
+                console.error('Error fetching south station data:', err)
+                setSouthData(null)
             }
-        } catch (err) {
-            console.error('Error fetching station data:', err)
         }
     }, [selectedStation, showNorth, showSouth])
+
+    // Clear old data when station changes to prevent showing stale data from previous station
+    useEffect(() => {
+        if (selectedStation) {
+            setNorthData(null)
+            setSouthData(null)
+        }
+    }, [selectedStation?.id])
 
     useEffect(() => {
         if (selectedStation) {
@@ -149,6 +164,7 @@ export default function StationCard({ configId, initialConfig, availableLines, o
                 showSouth={showSouth}
                 northRoutes={northData ? filterRoutes(northData.routes || []) : []}
                 southRoutes={southData ? filterRoutes(southData.routes || []) : []}
+                availableDirections={availableDirections}
             />
         </div>
     )
@@ -179,14 +195,37 @@ function Header({
     onToggleLine,
     onRemove,
 }: HeaderProps) {
-    return (
-        <div className="bg-gray-700 px-3 py-2 md:px-4 md:py-3 flex items-center gap-2 md:gap-4">
-            <div className="flex-1">
-                <StationSelector selectedStation={selectedStation} onSelect={onSelectStation} />
-            </div>
+    const [showSearch, setShowSearch] = useState(false)
 
-            <div className="flex items-center gap-2 md:gap-3 shrink-0">
-                {availableDirections.has('North') && (
+    return (
+        <div className="bg-gray-700">
+            {/* Station Name Title and Search Row */}
+            <div className="px-3 py-2 md:px-4 md:py-3 lg:px-6 lg:py-4 flex items-center gap-2 md:gap-4">
+                {selectedStation && (
+                    <h1 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white flex-1">
+                        {selectedStation.name}
+                    </h1>
+                )}
+
+                {/* Search Button */}
+                {showSearch ? (
+                    <div className="w-48">
+                        <StationSelector selectedStation={selectedStation} onSelect={(station) => {
+                            onSelectStation(station)
+                            setShowSearch(false)
+                        }} />
+                    </div>
+                ) : (
+                    <button
+                        onClick={() => setShowSearch(true)}
+                        className="px-3 py-1 md:px-4 md:py-2 bg-gray-600 hover:bg-gray-500 text-white rounded transition-colors text-sm md:text-base shrink-0"
+                    >
+                        Search
+                    </button>
+                )}
+
+                <div className="flex items-center gap-2 md:gap-3 shrink-0">
+                    {availableDirections.has('North') && (
                     <label className="flex items-center gap-1 cursor-pointer">
                         <input
                             type="checkbox"
@@ -227,12 +266,13 @@ function Header({
                 {onRemove && (
                     <button
                         onClick={onRemove}
-                        className="p-2 rounded-lg bg-red-600 hover:bg-red-500 transition-colors shrink-0"
+                        className="group p-2 rounded-lg bg-gray-700 hover:bg-red-600 transition-colors shrink-0"
                         title="Remove station"
                     >
-                        <XMarkIcon className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                        <XMarkIcon className="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-white transition-colors" />
                     </button>
                 )}
+                </div>
             </div>
         </div>
     )
@@ -244,9 +284,10 @@ interface ContentProps {
     showSouth: boolean
     northRoutes: Route[]
     southRoutes: Route[]
+    availableDirections: Set<string>
 }
 
-function Content({ selectedStation, showNorth, showSouth, northRoutes, southRoutes }: ContentProps) {
+function Content({ selectedStation, showNorth, showSouth, northRoutes, southRoutes, availableDirections }: ContentProps) {
     if (!selectedStation) {
         return (
             <div className="p-8 text-center text-gray-400">
@@ -255,16 +296,23 @@ function Content({ selectedStation, showNorth, showSouth, northRoutes, southRout
         )
     }
 
+    // Determine if this is an end-of-line station (only one direction available)
+    const isEndOfLine = availableDirections.size === 1
+
+    // Only render directions that are both available AND selected
+    const renderNorth = showNorth && availableDirections.has('North')
+    const renderSouth = showSouth && availableDirections.has('South')
+
     return (
         <div className="flex flex-col md:flex-row">
-            {showNorth && (
-                <div className={`flex-1 ${showSouth ? 'border-b md:border-b-0 md:border-r border-gray-700' : ''}`}>
-                    <DirectionCard direction="North" routes={northRoutes} />
+            {renderNorth && (
+                <div className={`flex-1 ${renderSouth ? 'border-b md:border-b-0 md:border-r border-gray-700' : ''}`}>
+                    <DirectionCard direction="North" routes={northRoutes} isEndOfLine={isEndOfLine} />
                 </div>
             )}
-            {showSouth && (
+            {renderSouth && (
                 <div className="flex-1">
-                    <DirectionCard direction="South" routes={southRoutes} />
+                    <DirectionCard direction="South" routes={southRoutes} isEndOfLine={isEndOfLine} />
                 </div>
             )}
         </div>

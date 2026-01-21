@@ -59,12 +59,12 @@ export default function StationSelector({ selectedStation, onSelect }: StationSe
     return (
         <div ref={dropdownRef} className="relative w-full">
             <div
-                className="flex items-center gap-2 bg-gray-700 px-3 py-2 cursor-pointer"
+                className="flex items-center gap-2 bg-transparent cursor-pointer"
                 onClick={() => setIsOpen(!isOpen)}
             >
                 <input
                     type="text"
-                    placeholder={selectedStation?.name || 'Search stations...'}
+                    placeholder="Search stations..."
                     value={search}
                     onChange={(e) => {
                         setSearch(e.target.value)
@@ -74,7 +74,7 @@ export default function StationSelector({ selectedStation, onSelect }: StationSe
                         e.stopPropagation()
                         setIsOpen(true)
                     }}
-                    className="flex-1 bg-transparent text-white placeholder-gray-400 outline-none text-sm md:text-base lg:text-lg"
+                    className="flex-1 bg-transparent text-white placeholder-gray-400 outline-none text-sm md:text-base"
                 />
                 <ChevronDownIcon
                     className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}

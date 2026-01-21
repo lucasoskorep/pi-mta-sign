@@ -3,8 +3,25 @@
 This project gives you a docker image that you can run locally to pull MTA data and self-host a webpage that looks very
 similar to the classic MTA Signs found in the metro.
 
+![ui-example.png](attachments/ui-example.png)
+
 Initially designed to run directly on a raspberry pi, it has been containerized and now runs anywhere you can install
 podman or docker!
+
+Additionally, this can be run without the frontend in case you just wanted a slightly more sane way to query MTA's data
+sources compared to their stock APIs.
+
+## Features
+
+- **Real-time MTA Data**: Live train arrival times for NYC subway
+  stations - [available for free here](https://api.mta.info/#/subwayRealTimeFeeds)
+- **Configurable Stations**: Monitor multiple stations simultaneously with separate cards
+- **Line Filtering**: Show/hide specific transit lines for each station
+- **Direction Selection**: Toggle between North/South bound trains independently
+- **Responsive Design**: Works on desktop, tablet, and mobile displays
+- **Configuration Persistence**: Save your selected stations and preferences to localStorage or export/import them via
+  JSON
+- **Docker Ready**: Easy deployment with Docker or Docker Compose
 
 ## Running the Docker Image
 
