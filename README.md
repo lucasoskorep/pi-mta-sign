@@ -9,7 +9,8 @@ Initially designed to run directly on a raspberry pi, it has been containerized 
 podman or docker!
 
 Additionally, this can be run without the frontend in case you just wanted a slightly more sane way to query MTA's data
-sources compared to their stock APIs.
+sources compared to their stock APIs.  Swagger is hosted at /swagger
+![swagger.png](attachments/swagger.png)
 
 ## Features
 
@@ -46,9 +47,10 @@ The application will be available at `http://localhost:8000`
 
 ### Environment Variables
 
-| Variable          | Description                     | Default | Required |
-|-------------------|---------------------------------|---------|----------|
-| `FRONTEND_ENABLE` | Enable/disable the web frontend | `true`  | No       |
+| Variable          | Description                                                | Default | Required |
+|-------------------|------------------------------------------------------------|---------|----------|
+| `FRONTEND_ENABLE` | Enable/disable the web frontend                            | `true`  | No       |
+| `SHOW_SWAGGER`    | Enable/disable Swagger API documentation at `/swagger`     | `false` | No       |
 
 ### Running with Docker Compose
 

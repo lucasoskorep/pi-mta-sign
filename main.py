@@ -15,7 +15,15 @@ from mta_sign_server.config.router import router as config_router
 
 load_dotenv()
 
-app = FastAPI()
+# Setup Swagger documentation
+show_swagger = os.getenv("SHOW_SWAGGER", "false").lower() in ("true", "1", "yes")
+swagger_config = {
+    "docs_url": "/swagger" if show_swagger else None,
+    "redoc_url": None,
+    "openapi_url": "/openapi.json" if show_swagger else None,
+}
+
+app = FastAPI(**swagger_config)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['*']
@@ -49,6 +57,10 @@ if frontend_enabled and static_dir.exists():
     @app.get("/{path:path}")
     async def serve_spa(path: str):
         """Serve static files or fall back to index.html for SPA routing"""
+        # Exclude API and documentation routes from SPA fallback
+        if path.startswith(("api/", "swagger", "openapi", "redoc", "docs")):
+            return {"error": "Not found"}
+
         file_path = static_dir / path
         if file_path.exists() and file_path.is_file():
             return FileResponse(file_path)
