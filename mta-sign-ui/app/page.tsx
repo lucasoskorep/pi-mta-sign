@@ -1,92 +1,175 @@
-import Image from 'next/image'
-import Header from "@/components/header";
-import Station from "@/components/trains/station";
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
+import { PlusIcon } from '@heroicons/react/24/outline'
+import Header from '@/components/Header'
+import StationCard from '@/components/trains/StationCard'
+import { AppConfig, StationConfig, CONFIG_VERSION } from '@/types/config'
+import axios from 'axios'
+
+const generateId = () => Math.random().toString(36).substring(2, 11)
+
+const DEFAULT_CONFIGS: StationConfig[] = [
+    { id: generateId(), stationId: '127', stationName: 'Times Sq-42 St', showNorth: true, showSouth: true, selectedLines: [] },
+    { id: generateId(), stationId: 'A27', stationName: 'Times Sq-42 St', showNorth: true, showSouth: true, selectedLines: [] },
+]
+
+const STORAGE_KEY = 'mta-sign-config'
+
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between">
-      <Header></Header>
-      <Station></Station>
+    const [stationConfigs, setStationConfigs] = useState<StationConfig[]>(DEFAULT_CONFIGS)
+    const [availableLines, setAvailableLines] = useState<string[]>([])
+    const [startTime, setStartTime] = useState<string | null>(null)
+    const [lastUpdated, setLastUpdated] = useState<string | null>(null)
+    const [isLoaded, setIsLoaded] = useState(false)
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+    // Load config from localStorage on mount
+    useEffect(() => {
+        if (typeof window === 'undefined') return
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY)
+            if (saved) {
+                const config = JSON.parse(saved)
+                if (config.stations && Array.isArray(config.stations)) {
+                    // Ensure all stations have IDs
+                    const stationsWithIds = config.stations.map((s: any) => ({
+                        ...s,
+                        id: s.id || generateId(),
+                    }))
+                    setStationConfigs(stationsWithIds)
+                }
+            }
+        } catch (err) {
+            console.error('Error loading config from localStorage:', err)
+        }
+        setIsLoaded(true)
+    }, [])
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+    useEffect(() => {
+        axios.get('/api/lines')
+            .then(response => {
+                const lines = response.data.lines || []
+                setAvailableLines(lines)
+                // Update default configs to include all lines
+                setStationConfigs(prev => prev.map(config => ({
+                    ...config,
+                    selectedLines: config.selectedLines.length === 0 ? lines : config.selectedLines
+                })))
+            })
+            .catch(err => console.error('Error fetching lines:', err))
+    }, [])
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+    useEffect(() => {
+        axios.post('/api/start_time')
+            .then(response => {
+                if (response.data) {
+                    setStartTime(new Date(response.data).toLocaleString('en-US'))
+                }
+            })
+            .catch(err => console.error('Error fetching start time:', err))
+    }, [])
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setLastUpdated(new Date().toLocaleString('en-US'))
+        }, 5000)
+        return () => clearInterval(interval)
+    }, [])
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    // Save config to localStorage whenever it changes
+    useEffect(() => {
+        if (typeof window === 'undefined') return
+        try {
+            const configToSave = {
+                version: CONFIG_VERSION,
+                stations: stationConfigs,
+            }
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(configToSave))
+        } catch (err) {
+            console.error('Error saving config to localStorage:', err)
+        }
+    }, [stationConfigs])
+
+    const handleConfigChange = useCallback((configId: string, newConfig: StationConfig) => {
+        setStationConfigs(prevConfigs => {
+            const updated = prevConfigs.map(config => config.id === configId ? newConfig : config)
+            return updated
+        })
+    }, [])
+
+    const addStation = () => {
+        const newConfig: StationConfig = {
+            id: generateId(),
+            stationId: '',
+            stationName: '',
+            showNorth: true,
+            showSouth: true,
+            selectedLines: availableLines,
+        }
+        setStationConfigs([...stationConfigs, newConfig])
+    }
+
+    const removeStation = (configId: string) => {
+        setStationConfigs(stationConfigs.filter(config => config.id !== configId))
+    }
+
+    const exportConfig = useCallback((): AppConfig => {
+        return {
+            version: CONFIG_VERSION,
+            stations: stationConfigs,
+        }
+    }, [stationConfigs])
+
+    const importConfig = useCallback((config: AppConfig) => {
+        if (config.version !== CONFIG_VERSION) {
+            alert(`Config version mismatch. Expected ${CONFIG_VERSION}, got ${config.version}`)
+            return
+        }
+        // Ensure all stations have IDs
+        const stationsWithIds = config.stations.map(station => ({
+            ...station,
+            id: station.id || generateId(),
+        }))
+        setStationConfigs(stationsWithIds)
+    }, [])
+
+    if (availableLines.length === 0) {
+        return (
+            <main className="min-h-screen bg-gray-900 flex items-center justify-center">
+                <div className="text-white text-xl">Loading...</div>
+            </main>
+        )
+    }
+
+    return (
+        <main className="min-h-screen bg-gray-900 flex flex-col">
+            <Header
+                startTime={startTime}
+                lastUpdated={lastUpdated}
+                onExportConfig={exportConfig}
+                onImportConfig={importConfig}
+            />
+
+            <div className="flex-1 p-2 md:p-4 space-y-4 md:space-y-6">
+                {stationConfigs.map((config) => (
+                    <StationCard
+                        key={config.id}
+                        configId={config.id}
+                        initialConfig={config.stationId ? config : undefined}
+                        availableLines={availableLines}
+                        onConfigChange={handleConfigChange}
+                        onRemove={() => removeStation(config.id)}
+                    />
+                ))}
+
+                <button
+                    onClick={addStation}
+                    className="w-full p-4 border-2 border-dashed border-gray-600 rounded-lg text-gray-400 hover:border-gray-500 hover:text-gray-300 transition-colors flex items-center justify-center gap-2"
+                >
+                    <PlusIcon className="w-5 h-5" />
+                    Add Station
+                </button>
+            </div>
+        </main>
+    )
 }

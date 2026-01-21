@@ -125,3 +125,7 @@ venv.bak/
 dmypy.jsons
 
 .ruff_cache
+
+# Frontend build output
+static/
+mta-sign-ui/out/

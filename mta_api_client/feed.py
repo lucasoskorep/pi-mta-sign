@@ -13,11 +13,5 @@ class Feed(Enum):
 
 
 ALL_FEEDS = [
-    Feed.ACE,
-    Feed.BDFM,
-    Feed.G,
-    Feed.NQRW,
-    Feed.L,
-    Feed.N1234567,
-    Feed.SIR
+    member for member in Feed
 ]
