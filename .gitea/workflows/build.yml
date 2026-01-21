@@ -20,6 +20,10 @@ jobs:
       image: docker:cli
 
     steps:
+      - name: Install dependencies
+        run: |
+          apk add --no-cache nodejs npm git
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
