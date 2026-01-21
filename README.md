@@ -23,11 +23,7 @@ sources compared to their stock APIs.
   JSON
 - **Docker Ready**: Easy deployment with Docker or Docker Compose
 
-## Running the Docker Image
-
-### Prerequisites
-
-- Docker installed on your system
+## Running via Docker
 
 ### Quick Start with Docker
 
