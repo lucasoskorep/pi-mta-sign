@@ -57,8 +57,6 @@ The application will be available at `http://localhost:8000`
 For a more convenient setup, use the provided docker-compose configuration:
 
 ```bash
-# Copy the example docker-compose.yaml from the docker folder
-cp docker/docker-compose.example.yaml docker-compose.yaml
 
 # Run with docker-compose
 docker-compose up -d
