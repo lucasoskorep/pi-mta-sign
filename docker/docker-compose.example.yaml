@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  pi-mta-sign:
+    image: ghcr.io/lucasoskorep/pi-mta-sign:latest
+    container_name: pi-mta-sign
+    ports:
+      - "8000:8000"
+    environment:
+      # OPTIONAL: Enable or disable the web frontend (default: true)
+      FRONTEND_ENABLE: "true"

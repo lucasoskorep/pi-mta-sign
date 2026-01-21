@@ -5,9 +5,7 @@ default:
 # Setup Python project
 init:
     uv sync
-
-# Setup frontend project
-init-ui:
+    fnm use
     cd mta-sign-ui && pnpm install
 
 # Build frontend and run FastAPI serving static files
@@ -21,7 +19,6 @@ dev:
     echo "Starting FastAPI backend on :8000..."
     uv run python main.py &
     BACKEND_PID=$!
-    sleep 2
     echo "Starting Next.js dev server on :3000..."
     cd mta-sign-ui && pnpm dev &
     FRONTEND_PID=$!
