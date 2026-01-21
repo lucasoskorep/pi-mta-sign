@@ -77,7 +77,6 @@ Tools needed:
 Once you have all the required tooling all you need to do is
 
 ```bash
-just init # downloads python 
-
+just init # uses uv and fnm/pnpm to download and setup all python and node depencencies
 just dev # this will spin up the nextjs frontend and fastapi backend in hot reload mode
 ```
