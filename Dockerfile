@@ -1,5 +1,5 @@
 # Stage 1: Build the Next.js frontend
-FROM docker.io/library/node:24-alpine AS frontend-builder
+FROM docker.io/library/node:25-alpine AS frontend-builder
 LABEL authors="lucasoskorep"
 
 WORKDIR /build/mta-sign-ui
