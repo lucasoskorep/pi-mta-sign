@@ -1,17 +1,14 @@
 # Stage 1: Build the Next.js frontend
-FROM docker.io/library/node:25-alpine AS frontend-builder
+FROM docker.io/library/node:25 AS frontend-builder
 LABEL authors="lucasoskorep"
 
 WORKDIR /build/mta-sign-ui
 
-# Enable corepack for pnpm
-RUN corepack enable && corepack prepare pnpm@10.28.1 --activate
-
 # Copy package files first for better caching
 COPY mta-sign-ui/package.json mta-sign-ui/pnpm-lock.yaml* ./
 
-# Install dependencies (use frozen-lockfile if lock exists, otherwise generate)
-RUN pnpm install
+# Enable corepack and install pnpm from packageManager field
+RUN npm install -g pnpm
 
 # Copy the rest of the frontend source
 COPY mta-sign-ui/ ./

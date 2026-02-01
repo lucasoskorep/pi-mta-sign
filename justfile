@@ -65,9 +65,9 @@ build-ui:
 
 # Build multi-arch container image
 containers:
-    podman build --platform linux/arm64,linux/amd64 -f docker/Dockerfile --manifest chaos2theory/pi-mta-sign:test .
+    podman build --platform linux/arm64,linux/amd64 -f Dockerfile --manifest chaos2theory/pi-mta-sign:test .
     podman manifest push --all chaos2theory/pi-mta-sign:test
-    podman manifest rm chaos2theory/pi-mta-sign:test
+    podman manifest rm chaos2theory/pi-mta-sign:testpod
 
 # Build container image (local arch only)
 build-container:
