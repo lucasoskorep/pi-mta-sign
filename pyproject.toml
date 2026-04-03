@@ -3,7 +3,7 @@ name = "pi-mta-sign"
 version = "0.1.0"
 description = ""
 authors = [{ name = "Lucas Oskorep", email = "lucas.oskorep@gmail.com" }]
-license = "MIT"
+license = "GPL-3.0-only"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
