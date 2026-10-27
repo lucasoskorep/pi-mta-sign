@@ -1,11 +1,12 @@
-FROM docker.io/library/node:25 AS frontend-builder
+FROM ghcr.io/jdx/mise:2026.10.19-debian AS frontend-builder
 LABEL authors="lucasoskorep"
 
 WORKDIR /build/mta-sign-ui
 
-COPY mta-sign-ui/package.json mta-sign-ui/pnpm-lock.yaml* ./
+COPY mise.toml ./
+RUN mise trust && mise install node pnpm
 
-RUN npm install -g pnpm@10.33.0
+COPY mta-sign-ui/package.json mta-sign-ui/pnpm-lock.yaml* ./
 
 COPY mta-sign-ui/ ./
 

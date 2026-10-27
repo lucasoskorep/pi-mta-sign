@@ -4,8 +4,6 @@
 .gitea
 .github
 .idea
-.mise.toml
-mise.toml
 .docker
 Dockerfile
 docker-compose.yaml
