@@ -5,11 +5,14 @@ WORKDIR /build/mta-sign-ui
 
 COPY mta-sign-ui/package.json mta-sign-ui/pnpm-lock.yaml* ./
 
-RUN npm install -g pnpm
+# Pin pnpm to the version declared in mta-sign-ui/package.json ("packageManager");
+# an unpinned global install drifts to new majors (pnpm 12 hard-errors on
+# unapproved build scripts).
+RUN npm install -g pnpm@10.33.0
 
 COPY mta-sign-ui/ ./
 
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 RUN pnpm build
 
 FROM ghcr.io/astral-sh/uv:python3.13-bookworm
