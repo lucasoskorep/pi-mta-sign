@@ -1,17 +1,20 @@
-FROM ghcr.io/jdx/mise:2026.10.19-debian AS frontend-builder
+FROM ghcr.io/jdx/mise:2026.10.19 AS mise
+
+FROM docker.io/library/node:25 AS frontend-builder
 LABEL authors="lucasoskorep"
 
 WORKDIR /build/mta-sign-ui
 
+COPY --from=mise /usr/local/bin/mise /usr/local/bin/mise
 COPY mise.toml ./
-RUN mise trust && mise install node pnpm
+RUN mise trust && mise install pnpm
 
 COPY mta-sign-ui/package.json mta-sign-ui/pnpm-lock.yaml* ./
 
 COPY mta-sign-ui/ ./
 
-RUN pnpm install --frozen-lockfile
-RUN pnpm build
+RUN mise exec -- pnpm install --frozen-lockfile
+RUN mise exec -- pnpm build
 
 FROM ghcr.io/astral-sh/uv:python3.13-bookworm
 LABEL authors="lucasoskorep"
